@@ -1,0 +1,89 @@
+# Виртуальное окружение
+venv/
+env/
+ENV/
+
+# Байт-код Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Распределения и артефакты сборки
+dist/
+build/
+*.egg-info/
+*.eggs/
+
+# Файлы тестирования
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.coverage.*
+
+# Логи
+*.log
+logs/
+
+# Базы данных (локальные)
+*.db
+*.sqlite
+*.sqlite3
+
+# Модели AI/ML (большие файлы)
+models/
+checkpoints/
+*.h5
+*.pkl
+*.joblib
+*.bin
+*.pt
+*.pth
+
+# Среда разработки
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Системные файлы macOS/Windows
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Конфиденциальные файлы
+.env
+.env.local
+.env.*.local
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Установленные пакеты
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Дополнительно для Jupyter
+.ipynb_checkpoints/
