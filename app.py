@@ -6,7 +6,7 @@ import io
 
 app = FastAPI()
 
-print("🔄 Загружаем модель ResNet-50...")
+print("Загружаем модель ResNet-50...")
 
 MODEL_NAME = "microsoft/resnet-50"
 
@@ -14,7 +14,7 @@ processor = AutoImageProcessor.from_pretrained(MODEL_NAME)
 model = AutoModelForImageClassification.from_pretrained(MODEL_NAME)
 model.eval()
 
-print("✅ Модель загружена")
+print("Модель загружена")
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
