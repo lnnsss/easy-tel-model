@@ -19,14 +19,14 @@ from transformers import (
 app = FastAPI()
 
 
-# Legacy CV model (existing functionality)
+# Старый модуль компьютерного зрения с уже существующей функциональностью
 CV_MODEL_NAME = os.getenv("CV_MODEL_NAME", "microsoft/resnet-50")
 cv_processor = AutoImageProcessor.from_pretrained(CV_MODEL_NAME)
 cv_model = AutoModelForImageClassification.from_pretrained(CV_MODEL_NAME)
 cv_model.eval()
 
 
-# LLM config
+# Конфигурация языковой модели
 CHAT_MODEL_NAME = os.getenv("CHAT_MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
 CHAT_MAX_CONTEXT_CHARS = max(int(os.getenv("CHAT_MAX_CONTEXT_CHARS", "12000")), 2000)
 CHAT_MAX_NEW_TOKENS_DEFAULT = max(int(os.getenv("CHAT_MAX_NEW_TOKENS_DEFAULT", "256")), 64)
@@ -87,7 +87,7 @@ def _initialize_chat_model() -> None:
 
 
 def _trim_messages(messages: List[ChatMessage]) -> List[ChatMessage]:
-    # Keep tail that fits soft char budget
+    # Оставляем хвост, который помещается в мягкий лимит символов
     total = 0
     kept: List[ChatMessage] = []
     for message in reversed(messages):
