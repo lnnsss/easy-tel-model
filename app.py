@@ -21,6 +21,7 @@ app = FastAPI()
 
 # Старый модуль компьютерного зрения с уже существующей функциональностью
 CV_MODEL_NAME = os.getenv("CV_MODEL_NAME", "microsoft/resnet-50")
+CV_TOP_K = min(max(int(os.getenv("CV_TOP_K", "10")), 5), 20)
 cv_processor = AutoImageProcessor.from_pretrained(CV_MODEL_NAME)
 cv_model = AutoModelForImageClassification.from_pretrained(CV_MODEL_NAME)
 cv_model.eval()
@@ -63,6 +64,7 @@ class ChatRequest(BaseModel):
     max_new_tokens: Optional[int] = Field(default=None, ge=32, le=CHAT_MAX_NEW_TOKENS_LIMIT)
 
 
+# Лениво загружает языковую модель перед первым запросом чата.
 def _initialize_chat_model() -> None:
     global chat_tokenizer, chat_model, chat_ready
     if chat_ready:
@@ -86,6 +88,7 @@ def _initialize_chat_model() -> None:
         print("Chat model loaded")
 
 
+# Обрезает историю сообщений до безопасного лимита контекста модели.
 def _trim_messages(messages: List[ChatMessage]) -> List[ChatMessage]:
     # Оставляем хвост, который помещается в мягкий лимит символов
     total = 0
@@ -99,6 +102,7 @@ def _trim_messages(messages: List[ChatMessage]) -> List[ChatMessage]:
     return list(reversed(kept))
 
 
+# Готовит prompt и генерирует ответ локальной языковой модели.
 def _generate_reply(payload: ChatRequest) -> Dict[str, Any]:
     if not chat_ready:
         _initialize_chat_model()
@@ -148,6 +152,7 @@ def _generate_reply(payload: ChatRequest) -> Dict[str, Any]:
 
 
 @app.get("/health")
+# Возвращает статус ML-сервиса и загруженных моделей.
 def health():
     return {
         "ok": True,
@@ -184,10 +189,10 @@ async def predict(file: UploadFile = File(...)):
 
     logits = outputs.logits
     probs = torch.nn.functional.softmax(logits, dim=1)
-    top5 = probs.topk(5)
+    topk = probs.topk(CV_TOP_K)
 
     results = []
-    for score, idx in zip(top5.values[0], top5.indices[0]):
+    for score, idx in zip(topk.values[0], topk.indices[0]):
         label = cv_model.config.id2label[idx.item()]
         results.append({
             "label": label,
